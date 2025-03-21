@@ -3,7 +3,7 @@
 const express = require("express");
 const router = express.Router();
 const Activity = require("../models/Activity");
-const company = require("../models/Company");
+const mongoose = require("mongoose");
 
 // GET all activities paginate 10 by 10
 // Use example: /activities/list?page=1
@@ -14,7 +14,7 @@ router.get("/list", async (req, res) => {
 
   try {
     const activities = await Activity.find()
-      .sort({ fecha: -1 })
+      .sort({ date: -1 })
       .limit(limit)
       .skip(skipIndex);
     res.json(activities);
@@ -25,15 +25,46 @@ router.get("/list", async (req, res) => {
   }
 });
 
-// GET last 10 activities
+// GET last 5 activities
 router.get("/latest", async (req, res) => {
   try {
-    const activities = await Activity.find().sort({ fecha: -1 }).limit(10);
+    const activities = await Activity.find().sort({ date: -1 }).limit(5);
     res.json(activities);
 
     console.log("GET /activities/latest");
   } catch (err) {
     res.json({ message: err });
+  }
+});
+
+// GET activity by id
+router.get("/:activityId", async (req, res) => {
+  const activityId = req.params.activityId;
+
+  try {
+    const activity = await Activity.findById(activityId);
+    res.json(activity);
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+
+// GET activities by project id
+// Use example: /activities/project/5f8f7b7b4b3e3b1f3c7e3b1f
+router.get("/project/:projectId", async (req, res) => {
+  const projectId = req.params.projectId;
+
+  try {
+    const activities = await Activity.find({
+      "project.id": new mongoose.Types.ObjectId(projectId),
+    });
+    res.json(activities);
+    console.log("GET /activities/project/" + projectId);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Error retrieving activities", error: err });
   }
 });
 

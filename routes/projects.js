@@ -3,6 +3,7 @@
 const express = require("express");
 const router = express.Router();
 const Project = require("../models/Project");
+const mongoose = require("mongoose");
 
 // GET all projects paginated 10 by 10
 // Use example: /projects/list?page=1
@@ -13,7 +14,7 @@ router.get("/list", async (req, res) => {
 
   try {
     const projects = await Project.find()
-      .sort({ fecha: -1 })
+      .sort({ date: -1 })
       .limit(limit)
       .skip(skipIndex);
     res.json(projects);
@@ -24,18 +25,20 @@ router.get("/list", async (req, res) => {
   }
 });
 
-// GET projects by company
-// Use example: /projects/company?company=companyName
-router.get("/company", async (req, res) => {
-  const company = req.query.company;
+// GET projects by company id
+// Use example: /projects/company/5f8f7b7b4b3e3b1f3c7e3b1f
+router.get("/company/:companyId", async (req, res) => {
+  const companyId = req.params.companyId;
 
   try {
-    const projects = await Project.find({ empresa: company });
+    const projects = await Project.find({
+      "company.id": new mongoose.Types.ObjectId(companyId),
+    });
     res.json(projects);
-
-    console.log("GET /projects/" + company);
+    console.log("GET /projects/company/" + companyId);
   } catch (err) {
-    res.json({ message: err });
+    console.error(err);
+    res.status(500).json({ message: "Error retrieving projects", error: err });
   }
 });
 

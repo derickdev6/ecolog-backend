@@ -23,5 +23,7 @@ const PORT = process.env.PORT || 5000;
 
 // Start the server on the specified port catching any errors
 app.listen(PORT, "0.0.0.0", () => {
+  // Clear console
+  console.clear();
   console.log(`🟢 Server running on http://0.0.0.0:${PORT}`);
 });

@@ -40,26 +40,17 @@ router.get("/id/:companyId", async (req, res) => {
   }
 });
 
-// POST a company
+// POST one or many companies
 router.post("/", async (req, res) => {
-  const company = new Company({
-    name: req.body.name,
-    nit: req.body.nit,
-    ceo: req.body.ceo,
-    short: req.body.short ? req.body.short : "Empty short description",
-    description: req.body.description ? req.body.description : "",
-    logo: req.body.logo
-      ? req.body.logo
-      : "https://loremflickr.com/200/200?random=10",
-    address: req.body.address,
-    mail: req.body.mail,
-    phone: req.body.phone,
-    contact: req.body.contact ? req.body.contact : "",
-  });
+  const companies = req.body;
+
+  if (!Array.isArray(companies)) {
+    companies = [companies];
+  }
 
   try {
-    const savedCompany = await company.save();
-    res.json(savedCompany);
+    const savedCompanies = await Company.insertMany(companies);
+    res.json(savedCompanies);
 
     console.log("POST /companies");
   } catch (err) {

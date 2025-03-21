@@ -8,17 +8,27 @@ const activitySchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  images: {
+    type: [String],
+    required: true,
+  },
   description: {
     type: [String],
     required: true,
   },
   project: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: {
+      id: mongoose.Schema.Types.ObjectId,
+      name: String,
+    },
     ref: "projects",
     required: true,
   },
   company: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: {
+      id: mongoose.Schema.Types.ObjectId,
+      name: String,
+    },
     ref: "companies",
     required: true,
   },

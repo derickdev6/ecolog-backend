@@ -40,7 +40,7 @@ const companySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  contact: {
+  social: {
     type: [
       {
         name: String,
@@ -49,13 +49,6 @@ const companySchema = mongoose.Schema({
     ],
     required: true,
   },
-  // Projects that the company has
-  projects: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "projects",
-    },
-  ],
 });
 
 module.exports = mongoose.model("Company", companySchema);
